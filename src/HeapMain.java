@@ -31,15 +31,27 @@ public class HeapMain extends Application {
 	}
 
 	public int intLog2(int a) {
-		System.out.print("Log2 of " + a);
+		//System.out.print("Log2 of " + a);
 		int result = 0;
 		while(a > 1) {
 			a = a >> 1;
 			result++;
 		}
-		System.out.println(": " + result);
+		//System.out.println(": " + result);
 
 		return result;
+	}
+
+	public Point2D getPositionOfHeapIndex(int i, int width) {
+		int depth = intLog2(i + 1);
+		int numChildrenAtDepth = intPow(2, depth);
+		int childNumber = (i + 1) % numChildrenAtDepth;
+
+		double childSpacing = (double)width / (double)numChildrenAtDepth;
+		double x = childSpacing / 2 + childNumber * childSpacing;
+		double y = depth* 100 + 100;
+
+		return new Point2D(x, y);
 	}
 
 	@Override
@@ -67,35 +79,40 @@ public class HeapMain extends Application {
 		for(int i = 0; i < 31; i++ ){
 			heap.insert(Math.abs(random.nextInt(100)));
 		}
+		System.out.println(heap);
 
 		//Disegno dell'heap
-		int childNumber = 0;
-		int depth = 0;
 		ArrayList<Integer> heapArray = heap.getArray();
 		for(int i = 0; i < heapArray.size(); i++) {
-			int newDepth = intLog2(i + 1);
-			if(newDepth > depth) {
-				depth = newDepth;
-				childNumber = 0;
+			Point2D pos = getPositionOfHeapIndex(i, centerWidth);
+			double x = pos.getX();
+			double y = pos.getY();
+
+			//Disegna edge to parent
+			if(i > 0) {
+				int p = (i - 1) / 2;
+				Point2D parentPos = getPositionOfHeapIndex(p, centerWidth);
+				Point2D lineVec = parentPos.subtract(pos);
+				Point2D dir = lineVec.normalize();
+				parentPos = parentPos.subtract(dir.multiply(25 + 4));
+
+				Line line = new Line(x, y, parentPos.getX(), parentPos.getY());
+				line.setStrokeWidth(4.0);
+				line.setStroke(Color.BLACK);
+				centerPane.getChildren().add(line);
 			}
 
-			int numChildrenAtDepth = intPow(2, depth);
-			double childSpacing = (double)centerWidth / (double)numChildrenAtDepth;
-			double x = childSpacing / 2 + childNumber * childSpacing;
-			double y = depth* 100 + 100;
-
-			System.out.println("x: " + x + " | " + y);
-			Circle rect = new Circle(x, y, 25);
-			rect.setFill(Color.RED);
-			centerPane.getChildren().add(rect);
+			Circle circle = new Circle(x, y, 25);
+			circle.setStrokeWidth(4);
+			circle.setFill(Color.WHITE);
+			circle.setStroke(Color.DARKGREEN);
+			centerPane.getChildren().add(circle);
 
 			//-12 e + 6 sono belli hardcoded perche' i geni che hanno fatto JavaFx non hanno ancora
 			// scoperto che magari uno il testo lo vuole centrato, PORCA MADONNA
 			Text nodeText = new Text(x - 12, y + 6, heapArray.get(i).toString());
 			nodeText.setFont(Font.font(20));
 			centerPane.getChildren().add(nodeText);
-
-			childNumber++;
 		}
 
 
