@@ -30,10 +30,10 @@ public class HeapPane extends Pane {
 
 	private Heap heap;
 	private Group heapGroup;
-	
+
 	private Integer stepIndex;
 	private Integer doneIndex;
-	
+
 	public HeapPane(double width, double height) {
 		super();
 		//Genera un heap random
@@ -43,33 +43,33 @@ public class HeapPane extends Pane {
 		for(int i = 0; i < 10; i++ ){
 			heap.insert(Math.abs(random.nextInt(100)));
 		}
-		
+
 		setWidth(width);
 		setHeight(height);
 		setMinSize(width, height);
 		setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
-		
+
 		heapGroup = new Group();
 		getChildren().add(heapGroup);
-		
+
 		VBox commandBar = new VBox();
 		commandBar.setLayoutX(10);
 		commandBar.setLayoutY(height - 100);
 		getChildren().add(commandBar);
-		
+
 		Label commandLabel = new Label("Heap commands:");
 		commandLabel.setFont(Font.font(14));
 		commandBar.getChildren().add(commandLabel);
-		
+
 		HBox stepBar = new HBox();
 		commandBar.getChildren().add(stepBar);
-		
+
 
 		Button stepButton = new Button("Add");
 		Button removeButton = new Button("Remove min");
 		TextField enterNodeField = new TextField();
 		enterNodeField.setMaxWidth(30);
-		
+
 		stepButton.setDisable(true);
 		stepButton.setMinWidth(70);
 		stepButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -103,7 +103,7 @@ public class HeapPane extends Pane {
 				drawHeap();
 			}
 		});
-		
+
 		commandBar.getChildren().add(removeButton);
 		removeButton.setMinWidth(100);
 		removeButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -112,7 +112,7 @@ public class HeapPane extends Pane {
 				if(doneIndex != null) {
 					doneIndex = null;
 					removeButton.setText("Remove min");
-					stepButton.setDisable(false);
+					stepButton.setDisable(!enterNodeField.getText().matches("^[0-9]{1,2}$"));
 					enterNodeField.setDisable(false);
 				} else if(stepIndex == null) {
 					stepIndex = heap.removeMinFirstStep();
@@ -129,24 +129,24 @@ public class HeapPane extends Pane {
 					}
 					stepIndex = newStepIndex;
 				}
-				
+
 				drawHeap();
 			}
 		});
-		
+
 		enterNodeField.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				stepButton.setDisable(!newValue.matches("^[0-9]{1,2}$"));
 			}
 		});
-		
+
 		stepBar.getChildren().add(stepButton);
 		stepBar.getChildren().add(enterNodeField);
-		
+
 		widthProperty().addListener((a, b, c) -> { drawHeap(); });
 	}
-	
+
 
 	public Point2D getPositionOfHeapIndex(int i) {
 		int depth = Utils.intLog2(i + 1);
@@ -159,17 +159,17 @@ public class HeapPane extends Pane {
 
 		return new Point2D(x, y);
 	}
-	
+
 	public void setHeap(Heap h) {
 		heap = h;
 	}
-	
+
 	public void drawHeap() {
 		heapGroup.getChildren().clear();
 		if(heap == null) {
 			return;
 		}
-		
+
 		ArrayList<Integer> heapArray = heap.getArray();
 		for(int i = 0; i < heapArray.size(); i++) {
 			Point2D pos = getPositionOfHeapIndex(i);
@@ -196,10 +196,10 @@ public class HeapPane extends Pane {
 				circle.setStroke(Color.BLUE);
 			}
 			else if(stepIndex != null && i == stepIndex) {
-				circle.setStroke(Color.ORANGERED);	
+				circle.setStroke(Color.ORANGERED);
 			} else {
 				circle.setStroke(Color.DARKGREEN);
-				
+
 			}
 			circle.setFill(Color.WHITE);
 			heapGroup.getChildren().add(circle);
@@ -220,5 +220,5 @@ public class HeapPane extends Pane {
 
 	}
 
-	
+
 }

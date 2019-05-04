@@ -25,19 +25,16 @@ public class HeapMain extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
-
-
 		BorderPane root = new BorderPane();
 
-		HBox questionPane = new HBox();
-		questionPane.setPrefSize(1200, 700);
-		questionPane.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
-		root.setBottom(questionPane);
-	
-		HeapPane centerPane = new HeapPane(900, 550);
+		HeapPane centerPane = new HeapPane(900, 700);
 		root.setCenter(centerPane);
 		centerPane.drawHeap();
-		
+
+		HBox questionPane = new HBox();
+		questionPane.setPrefSize(1200, 200);
+		questionPane.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+		root.setBottom(questionPane);
 		
 		final Text q1 = new Text("");
 		
@@ -66,8 +63,8 @@ public class HeapMain extends Application {
 		EventHandler<ActionEvent> answrd =new EventHandler<ActionEvent>(){		
 			@Override
 			public void handle(ActionEvent e){
-				if(answerField.getText()!=null&&!answerField.getText().isEmpty()){
-					String word=new String("Ok");
+				if(answerField.getText() != null && !answerField.getText().isEmpty()){
+					String word = "Ok";
 					
 					if(word.equalsIgnoreCase(answerField.getText())){
 						q1.setText("GOOD");
@@ -85,9 +82,6 @@ public class HeapMain extends Application {
 				}
 				
 			}
-			
-			
-			
 		};
 		
 		answerField.setOnAction(answrd);
@@ -131,17 +125,15 @@ public class HeapMain extends Application {
 		root.setRight(rightPane);
 
 		Scene s = new Scene(root);
-		s.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>
-		  () {
-
-		@Override
-		public void handle(KeyEvent t) {
-		    if(t.getCode()==KeyCode.ESCAPE){  	
-		    	Stage sb = (Stage)root.getScene().getWindow();
-		    	sb.close();
-		    }
-		        }
-		  });
+		s.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent t) {
+			    if(t.getCode()==KeyCode.ESCAPE){  	
+			    	Stage sb = (Stage)root.getScene().getWindow();
+			    	sb.close();
+			    }
+			}
+		});
 
 		primaryStage.setScene(s);
 		primaryStage.setTitle("Heap AlgaT");
