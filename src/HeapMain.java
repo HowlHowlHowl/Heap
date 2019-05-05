@@ -1,19 +1,16 @@
-import java.util.ArrayList;
-import java.util.Random;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.*;
-import javafx.scene.*;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.*;
-import javafx.scene.shape.*;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
 
@@ -25,6 +22,10 @@ public class HeapMain extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
+		Path currentRelativePath = Paths.get("");
+		String pathString = currentRelativePath.toAbsolutePath().toString();
+		System.out.println("Current relative path is: " + pathString);
+		
 		BorderPane root = new BorderPane();
 
 		HeapPane centerPane = new HeapPane(900, 700);

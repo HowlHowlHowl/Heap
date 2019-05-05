@@ -28,14 +28,29 @@ import javafx.scene.text.Text;
 
 public class HeapPane extends Pane {
 
-	private Heap heap;
-	private Group heapGroup;
-
+	public enum State {
+		DEFAULT,
+		REMOVING,
+		ADDING,
+		DONE,
+	}
+	
+	//Heap controls
+	private State state;
+	public TextField enterNodeField;
+	private Button stepButton;
+	private Button finishButton;
+	private Button removeButton;
+	private Button addButton;
 	private Integer stepIndex;
-	private Integer doneIndex;
+
+	//Heap drawing
+	private Heap heap;
+	private Group heapGroup;	
 
 	public HeapPane(double width, double height) {
 		super();
+		
 		//Genera un heap random
 		heap = new Heap();
 		Random random = new Random();
@@ -51,85 +66,82 @@ public class HeapPane extends Pane {
 
 		heapGroup = new Group();
 		getChildren().add(heapGroup);
-
+ 
 		VBox commandBar = new VBox();
 		commandBar.setLayoutX(10);
 		commandBar.setLayoutY(height - 100);
 		getChildren().add(commandBar);
-
 		Label commandLabel = new Label("Heap commands:");
 		commandLabel.setFont(Font.font(14));
 		commandBar.getChildren().add(commandLabel);
 
-		HBox stepBar = new HBox();
-		commandBar.getChildren().add(stepBar);
-
-
-		Button stepButton = new Button("Add");
-		Button removeButton = new Button("Remove min");
-		TextField enterNodeField = new TextField();
+		//Add commands
+		HBox addBar = new HBox();
+		commandBar.getChildren().add(addBar);
+		addButton = new Button("Add");
+		addButton.setMinWidth(70);
+		enterNodeField = new TextField();
 		enterNodeField.setMaxWidth(30);
+		addBar.getChildren().addAll(addButton, enterNodeField);
 
-		stepButton.setDisable(true);
-		stepButton.setMinWidth(70);
-		stepButton.setOnAction(new EventHandler<ActionEvent>() {
+		//Remove commands
+		removeButton = new Button("Remove min");
+		removeButton.setMinWidth(100);
+		commandBar.getChildren().add(removeButton);
+		
+		//Step commands
+		VBox stepBar = new VBox();
+		stepBar.setLayoutX(200);
+		stepBar.setLayoutY(height - 100);
+		getChildren().add(stepBar);
+		Label stepLabel = new Label("Step commands:");
+		stepLabel.setFont(Font.font(14));
+		stepButton = new Button("Step");
+		stepButton.setMinWidth(100);
+		finishButton = new Button("Finish");
+		finishButton.setMinWidth(100);
+		stepBar.getChildren().addAll(stepLabel, stepButton, finishButton);
+		
+		addButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				//If we are not stepping we init a stepping
-				if(doneIndex != null) {
-					doneIndex = null;
-					enterNodeField.setText("");
-					stepButton.setText("Add");
-					enterNodeField.setDisable(false);
-					removeButton.setDisable(false);
+				if(heap.size() >= 31) {
+					return;
 				}
-				else if(stepIndex == null) {
-					if(heap.size() >= 31) {
-						return;
-					}
-					String valueString = enterNodeField.getText();
-					stepIndex = heap.insertFirstStep(Integer.parseInt(valueString));
-					stepButton.setText("Step");
-					enterNodeField.setDisable(true);
-					removeButton.setDisable(true);
-				} else {
-					Integer newStepIndex = heap.insertNextStep(stepIndex);
-					if(newStepIndex == null) {
-						doneIndex = stepIndex;
-						stepButton.setText("Done");
-					}
-					stepIndex = newStepIndex;
-				}
+				String valueString = enterNodeField.getText();
+				stepIndex = heap.insertFirstStep(Integer.parseInt(valueString));
+				setState(State.ADDING);
+				
 				drawHeap();
 			}
 		});
-
-		commandBar.getChildren().add(removeButton);
-		removeButton.setMinWidth(100);
+		
 		removeButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				if(doneIndex != null) {
-					doneIndex = null;
-					removeButton.setText("Remove min");
-					stepButton.setDisable(!enterNodeField.getText().matches("^[0-9]{1,2}$"));
-					enterNodeField.setDisable(false);
-				} else if(stepIndex == null) {
-					stepIndex = heap.removeMinFirstStep();
-					if(stepIndex != null) {
-						removeButton.setText("Step remove");
-						stepButton.setDisable(true);
-						enterNodeField.setDisable(true);
-					}
-				} else {
-					Integer newStepIndex = heap.removeMinNextStep(stepIndex);
-					if(newStepIndex == null) {
-						doneIndex = stepIndex;
-						removeButton.setText("Done removing");
-					}
-					stepIndex = newStepIndex;
+				stepIndex = heap.removeMinFirstStep();
+				if(stepIndex != null) {
+					setState(State.REMOVING);
 				}
 
+				drawHeap();
+			}
+		});
+		
+		stepButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				step();
+				drawHeap();
+			}
+		});
+		
+		finishButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				while(stepIndex != null) {
+					step();
+				}
 				drawHeap();
 			}
 		});
@@ -137,14 +149,62 @@ public class HeapPane extends Pane {
 		enterNodeField.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				stepButton.setDisable(!newValue.matches("^[0-9]{1,2}$"));
+				addButton.setDisable(!newValue.matches("^[0-9]{1,2}$"));
 			}
 		});
 
-		stepBar.getChildren().add(stepButton);
-		stepBar.getChildren().add(enterNodeField);
-
 		widthProperty().addListener((a, b, c) -> { drawHeap(); });
+		
+		setState(State.DEFAULT);
+	}
+	
+	public void setState(State s) {
+		state = s;
+		switch(state) {
+			case DEFAULT:
+				stepButton.setText("Step");
+				enterNodeField.setDisable(false);
+				addButton.setDisable(!enterNodeField.getText().matches("^[0-9]{1,2}$"));
+				removeButton.setDisable(false);
+				stepButton.setDisable(true);
+				finishButton.setDisable(true);
+			break;
+			
+			case REMOVING:
+			case ADDING:
+				enterNodeField.setDisable(true);
+				addButton.setDisable(true);
+				removeButton.setDisable(true);
+				stepButton.setDisable(false);
+				finishButton.setDisable(false);
+			break;
+
+			case DONE:
+				stepButton.setText("Done");
+			break;
+		}
+	}
+	
+	public void step() {
+		if(state == State.DONE) {
+			setState(State.DEFAULT);
+			stepIndex = null;
+		}
+		else if(state == State.ADDING) {
+			Integer newStepIndex = heap.insertNextStep(stepIndex);
+			if(newStepIndex == null) {
+				setState(State.DONE);
+			} else {
+				stepIndex = newStepIndex;
+			}
+		} else if(state == State.REMOVING) {
+			Integer newStepIndex = heap.removeMinNextStep(stepIndex);
+			if(newStepIndex == null) {
+				setState(State.DONE);
+			} else {
+				stepIndex = newStepIndex;
+			}
+		}
 	}
 
 
@@ -155,7 +215,7 @@ public class HeapPane extends Pane {
 
 		double childSpacing = getWidth() / (double)numChildrenAtDepth;
 		double x = childSpacing / 2 + childNumber * childSpacing;
-		double y = depth* 100 + 100;
+		double y = depth* 100 + 150;
 
 		return new Point2D(x, y);
 	}
@@ -192,11 +252,9 @@ public class HeapPane extends Pane {
 
 			Circle circle = new Circle(x, y, 25);
 			circle.setStrokeWidth(4);
-			if(doneIndex != null && i == doneIndex) {
-				circle.setStroke(Color.BLUE);
-			}
-			else if(stepIndex != null && i == stepIndex) {
-				circle.setStroke(Color.ORANGERED);
+			if(stepIndex != null && i == stepIndex) {
+				Color c = state == State.DONE ? Color.BLUE : Color.ORANGERED; 
+				circle.setStroke(c);
 			} else {
 				circle.setStroke(Color.DARKGREEN);
 
