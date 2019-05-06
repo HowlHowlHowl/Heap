@@ -68,8 +68,8 @@ public class HeapPane extends Pane {
 		getChildren().add(heapGroup);
  
 		VBox commandBar = new VBox();
-		commandBar.setLayoutX(10);
-		commandBar.setLayoutY(height - 100);
+		commandBar.setLayoutX(20);
+		commandBar.setLayoutY(height - 75);
 		getChildren().add(commandBar);
 		Label commandLabel = new Label("Heap commands:");
 		commandLabel.setFont(Font.font(14));
@@ -92,7 +92,7 @@ public class HeapPane extends Pane {
 		//Step commands
 		VBox stepBar = new VBox();
 		stepBar.setLayoutX(200);
-		stepBar.setLayoutY(height - 100);
+		stepBar.setLayoutY(height - 75);
 		getChildren().add(stepBar);
 		Label stepLabel = new Label("Step commands:");
 		stepLabel.setFont(Font.font(14));
@@ -215,7 +215,7 @@ public class HeapPane extends Pane {
 
 		double childSpacing = getWidth() / (double)numChildrenAtDepth;
 		double x = childSpacing / 2 + childNumber * childSpacing;
-		double y = depth* 100 + 150;
+		double y = depth* 100 + 50;
 
 		return new Point2D(x, y);
 	}
