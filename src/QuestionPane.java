@@ -11,6 +11,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
@@ -31,6 +32,9 @@ public class QuestionPane extends HBox {
 	private Button submit;
 	private ArrayList<String> questions;
 	private Integer i=0;
+	private ArrayList<String> answers;
+	int n=i+1;
+
 	
 	public final TextField answerField;
 	
@@ -44,8 +48,18 @@ public class QuestionPane extends HBox {
 		setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
 		Text Q = new Text("Here is the question...");
 		Q.setFont(Font.font("courier", 20));
-		final Text q1 = new Text("LOL");
+		final Text q1 = new Text("Click anywhere.");
 		
+		EventHandler<MouseEvent> getReady = new EventHandler<MouseEvent>(){
+			@Override
+			public void handle(MouseEvent e){
+				q1.setText("Domanda n°"+n);
+				q1.setFill(Color.BLACK);
+				Q.setText(questions.get(i));
+				
+			}
+		};
+		addEventHandler(MouseEvent.MOUSE_CLICKED,getReady);
 		q1.setFont(Font.font("courier", 20));
 		//Prev e Next Scene
 		prev = new Button("<< Prev");
@@ -53,13 +67,17 @@ public class QuestionPane extends HBox {
 		EventHandler<ActionEvent> prevQuestion = new EventHandler<ActionEvent>(){
 			@Override 
 			public void handle(ActionEvent e){
-				if(questions.get(i-1)!=null){
-					Q.setText(questions.get(i-1));
+				if(questions.get(i-1)!=null && answers.get(i-1)!=null){
 					i--;
+					n--;
+					Q.setText(questions.get(i));
+					q1.setText("Domanda n°"+n);
+					q1.setFill(Color.BLACK);
 				}
-				else {	}
+				else {}
 			}
 		};
+		
 		prev.setOnAction(prevQuestion);
 		
 		
@@ -68,11 +86,14 @@ public class QuestionPane extends HBox {
 		EventHandler<ActionEvent> nextQuestion = new EventHandler<ActionEvent>(){
 			@Override 
 			public void handle(ActionEvent e){
-				if(questions.get(i+1)!=null){
+				if(questions.get(i+1)!=null && answers.get(i+1)!=null){
 					i++;	
+					n++;
 					Q.setText(questions.get(i));
+					q1.setText("Domanda n°"+n);
+					q1.setFill(Color.BLACK);
 				}
-				else {	}
+				else {}
 			}
 		};
 		next.setOnAction(nextQuestion);
@@ -94,12 +115,14 @@ public class QuestionPane extends HBox {
 			@Override
 			public void handle(ActionEvent e){
 				if(answerField.getText() != null && !answerField.getText().isEmpty()){
-					String word = "Ok";
+			
+					String A = new String(answers.get(i).trim());
+					System.out.println(A);
+					System.out.println(answerField.getText());
+					if(A.equalsIgnoreCase(answerField.getText())){
 					
-					if(word.equalsIgnoreCase(answerField.getText())){
-						q1.setText("GOOD");
+						q1.setText("Right");
 						q1.setFill(Color.GREEN);
-						//TODO: add application
 						
 					}
 					else {
@@ -152,20 +175,29 @@ public class QuestionPane extends HBox {
 		
 		try {
 			File file = new File("src/","quest.txt");
-			if(file.exists()) {
-				System.out.println("Porcoddio");
-			}
 			jerry = new Scanner(file);
 		} catch(Exception e1){
 			System.out.println("Exception sul file");
 			System.exit(1);
 		}
 		
-		jerry.useDelimiter(",");
+		jerry.useDelimiter("[?.]");
 		questions = new ArrayList<String>();
+		answers =new ArrayList<String>();
 		while(jerry.hasNext()){
 			questions.add(jerry.next().trim());
+			if(jerry.hasNext())
+			answers.add(jerry.next());
+			
 		}
+		/*int j=0;
+		while(answers.size()>j){
+			System.out.println(answers.get(j));
+			j++;
+		}
+		
+		*/
 		jerry.close();
 	}
+
 }
