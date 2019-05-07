@@ -36,7 +36,6 @@ public class HeapMain extends Application {
 		centerPane.drawHeap();
 
 		QuestionPane questionPane = new QuestionPane(1200,200);
-		
 		root.setBottom(questionPane);
 
 		VBox rightPane = new VBox();
