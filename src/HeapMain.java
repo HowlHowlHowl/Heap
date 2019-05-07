@@ -22,7 +22,8 @@ public class HeapMain extends Application {
 		launch(rocket);
 	}
 
-
+	Lesson currentLesson = Lesson.HEAP;
+	
 	@Override
 	public void start(Stage primaryStage) {
 		Path currentRelativePath = Paths.get("");
@@ -31,16 +32,29 @@ public class HeapMain extends Application {
 		
 		BorderPane root = new BorderPane();
 
-		HeapPane centerPane = new HeapPane(900, 650);
+		HeapPane centerPane = new HeapPane(900, 600);
 		root.setCenter(centerPane);
-		centerPane.drawHeap();
-
+		
 		QuestionPane questionPane = new QuestionPane(1200,200);
 		root.setBottom(questionPane);
 
 		VBox rightPane = new VBox();
-		rightPane.setPrefSize(300, 650);
+		rightPane.setPrefSize(300, 600);
 		rightPane.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+		Button changeLessonButton = new Button("Change lesson");
+		changeLessonButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				if(currentLesson == Lesson.HEAP) {
+					currentLesson = Lesson.HEAPSORT;
+				} else {
+					currentLesson = Lesson.HEAP;
+				}
+				centerPane.setLesson(currentLesson);
+			}
+		});
+		rightPane.getChildren().add(changeLessonButton);
+		
 		root.setRight(rightPane);
 
 		Scene s = new Scene(root);

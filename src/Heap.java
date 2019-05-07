@@ -15,6 +15,9 @@ public class Heap {
 		return array.isEmpty();
 	}
 	
+	public void clear() {
+		array.clear();
+	}
 	
 	public void insert(int value) {
 		array.add(value);
@@ -180,7 +183,7 @@ public class Heap {
 		}
 	}
 	
-	public void heapSort() {
+	public void heapsort() {
 		makeHeap();
 		for(int i = array.size() - 1; i > 0; i--) {
 			Integer temp = array.get(i);
