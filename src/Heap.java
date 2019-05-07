@@ -1,32 +1,32 @@
 import java.util.ArrayList;
 
 public class Heap {
-	ArrayList<Integer> Array;
+	ArrayList<Integer> array;
 
 	public Heap() {
-		Array = new ArrayList<Integer>();
+		array = new ArrayList<Integer>();
 	}
 	
 	public int size() {
-		return Array.size();
+		return array.size();
 	}
 	
 	public boolean isEmpty() {
-		return Array.isEmpty();
+		return array.isEmpty();
 	}
 	
 	
 	public void insert(int value) {
-		Array.add(value);
+		array.add(value);
 		
 		//Indice del nodo appena aggiunto
-		int i = Array.size() - 1;
+		int i = array.size() - 1;
 		//Indice del padre
 		int p = (i - 1) / 2;
-		while(i > 0 && Array.get(i) < Array.get(p)) {
-			Integer temp = Array.get(p);
-			Array.set(p, Array.get(i));
-			Array.set(i, temp);
+		while(i > 0 && array.get(i) > array.get(p)) {
+			Integer temp = array.get(p);
+			array.set(p, array.get(i));
+			array.set(i, temp);
 			i = p;
 			p = (i - 1) / 2;
 		}
@@ -36,8 +36,8 @@ public class Heap {
 	//che va poi passata a a insertNextStep per continuare l'inserimento
 	public int insertFirstStep(int value) {
 		//Indice del nodo appena aggiunto
-		Array.add(value);
-		int i = Array.size() - 1;
+		array.add(value);
+		int i = array.size() - 1;
 		return i;		
 	}
 	
@@ -45,10 +45,10 @@ public class Heap {
 	//Ritorna null quando l'elemento e' in posizione
 	public Integer insertNextStep(int i) {
 		int p = (i - 1) / 2;
-		if(i > 0 && Array.get(i) < Array.get(p)) {
-			Integer temp = Array.get(p);
-			Array.set(p, Array.get(i));
-			Array.set(i, temp);
+		if(i > 0 && array.get(i) > array.get(p)) {
+			Integer temp = array.get(p);
+			array.set(p, array.get(i));
+			array.set(i, temp);
 		} else {
 			return null;
 		}
@@ -56,17 +56,16 @@ public class Heap {
 		return p;
 	}
 	
-	public Integer getMin() {
-		if(Array.isEmpty()) {
+	public Integer getMax() {
+		if(array.isEmpty()) {
 			return null;
 		} else {
-			return Array.get(0);
+			return array.get(0);
 		}
 	}
 	
 	//Rimette a posto il nodo in posizione i (O(logn))
-	private void restore() {
-		int i = 0;
+	private void restore(int i, int n) {
 		while(true) {
 			//nuova posizione di i
 			int newPos = i;
@@ -75,10 +74,10 @@ public class Heap {
 			int c1 = (i + 1) * 2 - 1;
 			int c2 = (i + 1) * 2;
 			
-			if(c1 < Array.size() && Array.get(c1) < Array.get(newPos)) {
+			if(c1 < n && array.get(c1) > array.get(newPos)) {
 				newPos = c1;
 			}
-			if(c2 < Array.size() && Array.get(c2) < Array.get(newPos)) {
+			if(c2 < n && array.get(c2) > array.get(newPos)) {
 				newPos = c2;
 			}
 			
@@ -86,47 +85,47 @@ public class Heap {
 				break;
 			}
 			
-			Integer temp = Array.get(newPos);
-			Array.set(newPos, Array.get(i));
-			Array.set(i, temp);
+			Integer temp = array.get(newPos);
+			array.set(newPos, array.get(i));
+			array.set(i, temp);
 			i = newPos;
 		}
 	}
 	
-	public Integer removeMin() {
+	public Integer removeMax() {
 		Integer result;
 		
-		if(Array.isEmpty()) {
+		if(array.isEmpty()) {
 			result = null;
-		} else if(Array.size() == 1) {
-			result = Array.remove(0);
+		} else if(array.size() == 1) {
+			result = array.remove(0);
 		}else {
-			result = Array.get(0);
+			result = array.get(0);
 			
 			//Sposta l'ultimo elemento al posto del primo
-			int last = Array.remove(Array.size() - 1);
-			Array.set(0, last);
+			int last = array.remove(array.size() - 1);
+			array.set(0, last);
 			//risistema il primo elemento al posto giusto
-			restore();	
+			restore(0, array.size());	
 		}
 		
 		return result;
 	}
 	
-	public Integer removeMinFirstStep() {
-		if(Array.size() <= 1) {
-			Array.clear();
+	public Integer removeMaxFirstStep() {
+		if(array.size() <= 1) {
+			array.clear();
 			return null;
 		}else {
 			//Sposta l'ultimo elemento al posto del primo
-			int last = Array.remove(Array.size() - 1);
-			Array.set(0, last);
+			int last = array.remove(array.size() - 1);
+			array.set(0, last);
 			return 0;
 		}
 	}
 	
 
-	public Integer removeMinNextStep(int i) {
+	public Integer removeMaxNextStep(int i) {
 		//nuova posizione di i
 		int newPos = i;
 		
@@ -134,30 +133,31 @@ public class Heap {
 		int c1 = (i + 1) * 2 - 1;
 		int c2 = (i + 1) * 2;
 		
-		if(c1 < Array.size() && Array.get(c1) < Array.get(newPos)) {
+		if(c1 < array.size() && array.get(c1) > array.get(newPos)) {
 			newPos = c1;
 		}
-		if(c2 < Array.size() && Array.get(c2) < Array.get(newPos)) {
+		if(c2 < array.size() && array.get(c2) > array.get(newPos)) {
 			newPos = c2;
 		}
 		
 		if(i != newPos) {
-			Integer temp = Array.get(newPos);
-			Array.set(newPos, Array.get(i));
-			Array.set(i, temp);
+			Integer temp = array.get(newPos);
+			array.set(newPos, array.get(i));
+			array.set(i, temp);
 			return newPos;
 		} else {
 			return null;
 		}
 	}
 	
+	
 	@Override
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 		result.append("[");
-		for(int i = 0; i < Array.size(); i++) {
-			result.append(Array.get(i));
-			if(i != Array.size() - 1) {
+		for(int i = 0; i < array.size(); i++) {
+			result.append(array.get(i));
+			if(i != array.size() - 1) {
 				result.append(" | ");
 			}
 		}
@@ -166,7 +166,28 @@ public class Heap {
 	}
 	
 	public ArrayList<Integer> getArray() {
-		return Array;
+		return array;
 	}
 	
+
+	public void setArray(ArrayList<Integer> a) {
+		array = a;
+	}
+	
+	public void makeHeap() {
+		for(int i = array.size() / 2; i >= 0; i--) {
+			restore(i, array.size());
+		}
+	}
+	
+	public void heapSort() {
+		makeHeap();
+		for(int i = array.size() - 1; i > 0; i--) {
+			Integer temp = array.get(i);
+			array.set(i, array.get(0));
+			array.set(0, temp);
+			
+			restore(0, i);
+		}
+	}
 }

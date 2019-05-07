@@ -59,11 +59,15 @@ public class HeapPane extends Pane {
 		
 		//Genera un heap random
 		heap = new Heap();
+		ArrayList<Integer> heapArray = new ArrayList<Integer>();
 		Random random = new Random();
 		random.setSeed(3);
 		for(int i = 0; i < 10; i++ ){
-			heap.insert(Math.abs(random.nextInt(100)));
+			heapArray.add(Math.abs(random.nextInt(100)));
 		}
+		heap.setArray(heapArray);
+		//heap.makeHeap();
+		heap.heapSort();
 
 		setWidth(width);
 		setHeight(height);
@@ -91,7 +95,7 @@ public class HeapPane extends Pane {
 		addBar.getChildren().addAll(addButton, enterNodeField);
 
 		//Remove commands
-		removeButton = new Button("Remove min");
+		removeButton = new Button("Remove max");
 		removeButton.setMinWidth(100);
 		commandBar.getChildren().add(removeButton);
 		
@@ -125,7 +129,7 @@ public class HeapPane extends Pane {
 		removeButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				stepIndex = heap.removeMinFirstStep();
+				stepIndex = heap.removeMaxFirstStep();
 				if(stepIndex != null) {
 					setState(State.REMOVING);
 				}
@@ -204,7 +208,7 @@ public class HeapPane extends Pane {
 				stepIndex = newStepIndex;
 			}
 		} else if(state == State.REMOVING) {
-			Integer newStepIndex = heap.removeMinNextStep(stepIndex);
+			Integer newStepIndex = heap.removeMaxNextStep(stepIndex);
 			if(newStepIndex == null) {
 				setState(State.DONE);
 			} else {
