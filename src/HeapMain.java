@@ -31,7 +31,7 @@ public class HeapMain extends Application {
 		
 		BorderPane root = new BorderPane();
 
-		HeapPane centerPane = new HeapPane(900, 500);
+		HeapPane centerPane = new HeapPane(900, 650);
 		root.setCenter(centerPane);
 		centerPane.drawHeap();
 
@@ -39,7 +39,7 @@ public class HeapMain extends Application {
 		root.setBottom(questionPane);
 
 		VBox rightPane = new VBox();
-		rightPane.setPrefSize(300, 700);
+		rightPane.setPrefSize(300, 650);
 		rightPane.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
 		root.setRight(rightPane);
 

@@ -11,6 +11,7 @@ import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
@@ -19,15 +20,19 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 public class HeapPane extends Pane {
 
+	final static int MAX_HEAP_SIZE = 15;
+	
 	public enum State {
 		DEFAULT,
 		REMOVING,
@@ -43,6 +48,7 @@ public class HeapPane extends Pane {
 	private Button removeButton;
 	private Button addButton;
 	private Integer stepIndex;
+	//private Integer hoverIndex = 0;
 
 	//Heap drawing
 	private Heap heap;
@@ -105,7 +111,7 @@ public class HeapPane extends Pane {
 		addButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				if(heap.size() >= 31) {
+				if(heap.size() >= MAX_HEAP_SIZE) {
 					return;
 				}
 				String valueString = enterNodeField.getText();
@@ -149,7 +155,7 @@ public class HeapPane extends Pane {
 		enterNodeField.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				addButton.setDisable(!newValue.matches("^[0-9]{1,2}$"));
+				addButton.setDisable(!(newValue.matches("^[0-9]{1,2}$") && heap.size() < MAX_HEAP_SIZE));
 			}
 		});
 
@@ -164,7 +170,7 @@ public class HeapPane extends Pane {
 			case DEFAULT:
 				stepButton.setText("Step");
 				enterNodeField.setDisable(false);
-				addButton.setDisable(!enterNodeField.getText().matches("^[0-9]{1,2}$"));
+				addButton.setDisable(!(enterNodeField.getText().matches("^[0-9]{1,2}$") && heap.size() < MAX_HEAP_SIZE));
 				removeButton.setDisable(false);
 				stepButton.setDisable(true);
 				finishButton.setDisable(true);
@@ -260,7 +266,14 @@ public class HeapPane extends Pane {
 
 			}
 			circle.setFill(Color.WHITE);
+			
+			
 			heapGroup.getChildren().add(circle);
+			
+			Text indexText = new Text(x - 5, y - 30, Integer.toString(i));
+			indexText.setFont(Font.font(14));
+			heapGroup.getChildren().add(indexText);
+			
 
 			//-12, -6 e + 6 sono belli hardcoded perche' i geni che hanno fatto JavaFx non hanno ancora
 			// scoperto che magari uno il testo lo vuole centrato, PORCA MADONNA
@@ -274,6 +287,33 @@ public class HeapPane extends Pane {
 			Text nodeText = new Text(x + textOffset, y + 6, heapArray.get(i).toString());
 			nodeText.setFont(Font.font(20));
 			heapGroup.getChildren().add(nodeText);
+		}
+		
+		for(int i = 0; i < MAX_HEAP_SIZE; i++) {
+			double x = 70 + 50 * i;
+			double y = 450;
+			
+			StackPane stack = new StackPane();
+			Rectangle rect = new Rectangle(50, 50);
+			rect.setFill(Color.WHITE);
+			rect.setStroke(Color.DARKGREEN);
+			rect.setStrokeWidth(3);
+			stack.getChildren().add(rect);
+			
+			if(i < heapArray.size()) {
+				Text text = new Text(heapArray.get(i).toString());
+				text.setFont(Font.font(20));
+				stack.getChildren().add(text);
+			}
+			
+			stack.setLayoutX(x);
+			stack.setLayoutY(y);
+			
+			Text indexText = new Text(x + 20, y - 7, Integer.toString(i));
+			indexText.setFont(Font.font(14));
+			
+			heapGroup.getChildren().add(indexText);
+			heapGroup.getChildren().add(stack);
 		}
 
 	}
