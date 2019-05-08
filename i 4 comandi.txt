@@ -1,4 +1,6 @@
 git pull
+APRO ECLIPSE E FACCIO DEI CAMBIAMENTI
+CHIUDO ECLIPSE
 git add *
 git commit -m"porcoddio"
 git push

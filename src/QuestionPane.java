@@ -34,7 +34,7 @@ public class QuestionPane extends HBox {
 	private VBox dxQuest;
 	private VBox sxQuest;
 	private HBox toggleLayout;
-
+	private Integer questionsIndex = 0;
 	private Integer activeIndex = 0;
 	private ArrayList<String> answers;
 	private ArrayList<Boolean> risCor;
@@ -127,6 +127,7 @@ public class QuestionPane extends HBox {
 				if(answerField.getText() != null && !answerField.getText().isEmpty()) {
 					String A = new String(answers.get(activeIndex).trim());
 					if(A.equalsIgnoreCase(answerField.getText())) {
+						questionsIndex++;
 						risCor.set(activeIndex, true);
 						q1.setText("Right");
 						q1.setFill(Color.GREEN);
@@ -216,6 +217,7 @@ public class QuestionPane extends HBox {
 		
 	}
 	void setLesson(Lesson lesson) {
+		questionsIndex=0;
 		readQuestions(lesson);
 		setActiveQuestion(0);
 		q1.setText("");
@@ -235,29 +237,35 @@ public class QuestionPane extends HBox {
 	}
 
 	void setActiveQuestion(int i) {
-		if(i >= 0 && i < answers.size()) {
-			activeIndex = i;
-			if(i > 0) {
-				prev.setDisable(false);
+		if(i<=questionsIndex){
+			answerField.clear();
+			if(i >= 0 && i < answers.size()) {
+				activeIndex = i;
+				if(i > 0) {
+					prev.setDisable(false);
+				}
+				if(i < answers.size() - 1) {
+					next.setDisable(false);
+				}
+				if(i == 0) {
+					prev.setDisable(true);
+				}
+				if(i == answers.size() - 1) {
+					next.setDisable(true);
+				}
+	
+				for(int j = 0; j < buttonList.size(); j++) {
+					buttonList.get(j).setSelected(false);
+				}
+				buttonList.get(i).setSelected(true);
+	
+				question.setText(questions.get(i));
+				q1.setText("Domanda n°"+ (i + 1));
+				q1.setFill(Color.BLACK);
 			}
-			if(i < answers.size() - 1) {
-				next.setDisable(false);
-			}
-			if(i == 0) {
-				prev.setDisable(true);
-			}
-			if(i == answers.size() - 1) {
-				next.setDisable(true);
-			}
-
-			for(int j = 0; j < buttonList.size(); j++) {
-				buttonList.get(j).setSelected(false);
-			}
-			buttonList.get(i).setSelected(true);
-
-			question.setText(questions.get(i));
-			q1.setText("Domanda n°"+ (i + 1));
+		} else {
 			q1.setFill(Color.BLACK);
+			q1.setText("You have to answer this question before...");
 		}
 	}
 }
