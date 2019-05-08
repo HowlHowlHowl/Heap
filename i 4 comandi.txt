@@ -1,0 +1,7 @@
+git pull
+git add *
+git commit -m"porcoddio"
+git push
+(se vuoi fare il swag)
+git status
+git log

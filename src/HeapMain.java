@@ -23,24 +23,27 @@ public class HeapMain extends Application {
 	}
 
 	Lesson currentLesson = Lesson.HEAP;
-	
+
 	@Override
 	public void start(Stage primaryStage) {
 		Path currentRelativePath = Paths.get("");
 		String pathString = currentRelativePath.toAbsolutePath().toString();
 		System.out.println("Current relative path is: " + pathString);
-		
+
 		BorderPane root = new BorderPane();
 
-		HeapPane centerPane = new HeapPane(900, 600);
+		HeapPane centerPane = new HeapPane(900, 550);
 		root.setCenter(centerPane);
-		
-		QuestionPane questionPane = new QuestionPane(1200,200);
+
+		QuestionPane questionPane = new QuestionPane(900,150);
 		root.setBottom(questionPane);
 
 		VBox rightPane = new VBox();
-		rightPane.setPrefSize(300, 600);
+		rightPane.setPrefSize(300, 550);
 		rightPane.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+		Label lessonLabel = new Label("HEAP");
+		lessonLabel.setFont(Font.font(20));
+		rightPane.getChildren().add(lessonLabel);
 		Button changeLessonButton = new Button("Change lesson");
 		changeLessonButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -50,10 +53,22 @@ public class HeapMain extends Application {
 				} else {
 					currentLesson = Lesson.HEAP;
 				}
+				lessonLabel.setText(currentLesson.toString());
 				centerPane.setLesson(currentLesson);
+				questionPane.setLesson(currentLesson);
+				questionPane.disableQuestions();
 			}
 		});
 		rightPane.getChildren().add(changeLessonButton);
+		Button lessonFinished = new Button("Lesson finished");
+		lessonFinished.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				questionPane.enableQuestions();
+			}
+		});
+		
+		rightPane.getChildren().add(lessonFinished);
 		
 		root.setRight(rightPane);
 
@@ -61,13 +76,13 @@ public class HeapMain extends Application {
 		s.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent t) {
-			    if(t.getCode()==KeyCode.ESCAPE){  	
+			    if(t.getCode()==KeyCode.ESCAPE){
 			    	Stage sb = (Stage)root.getScene().getWindow();
 			    	sb.close();
 			    }
 			}
 		});
-		
+
 		primaryStage.setScene(s);
 		primaryStage.setTitle("Heap AlgaT");
 		primaryStage.show();

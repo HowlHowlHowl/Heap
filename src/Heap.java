@@ -178,7 +178,7 @@ public class Heap {
 	}
 	
 	public void makeHeap() {
-		for(int i = array.size() / 2; i >= 0; i--) {
+		for(int i = array.size() / 2 - 1; i >= 0; i--) {
 			restore(i, array.size());
 		}
 	}

@@ -45,6 +45,7 @@ public class HeapPane extends Pane {
 	private Button removeButton;
 	private Button addButton;
 	private Integer stepIndex;
+	private Integer heapsortIndex;
 
 	//Heap drawing
 	private Heap heap;
@@ -248,6 +249,7 @@ public class HeapPane extends Pane {
 	public void setLesson(Lesson lesson) {
 		switch(lesson) {
 		case HEAP: {
+			heapsortIndex = Integer.MAX_VALUE;
 			lessonHeapControls.setVisible(true);
 			lessonHeapsortControls.setVisible(false);
 			//Genera un heap
@@ -259,6 +261,7 @@ public class HeapPane extends Pane {
 		} break;
 		
 		case HEAPSORT: {
+			heapsortIndex = 300;
 			lessonHeapsortControls.setVisible(true);
 			lessonHeapControls.setVisible(false);
 			randomizeArray();
@@ -309,7 +312,7 @@ public class HeapPane extends Pane {
 			double y = pos.getY();
 
 			//Disegna edge to parent
-			if(i > 0) {
+			if(i != 0 && i < heapsortIndex) {
 				int p = (i - 1) / 2;
 				Point2D parentPos = getPositionOfHeapIndex(p);
 				Point2D lineVec = parentPos.subtract(pos);
@@ -330,6 +333,9 @@ public class HeapPane extends Pane {
 			} else {
 				circle.setStroke(Color.DARKGREEN);
 
+			}
+			if(i >= heapsortIndex) {
+				circle.setStroke(Color.BLUE);
 			}
 			circle.setFill(Color.WHITE);
 			
@@ -357,12 +363,13 @@ public class HeapPane extends Pane {
 		
 		for(int i = 0; i < MAX_HEAP_SIZE; i++) {
 			double x = 70 + 50 * i;
-			double y = 450;
+			double y = 410;
 			
 			StackPane stack = new StackPane();
 			Rectangle rect = new Rectangle(50, 50);
 			rect.setFill(Color.WHITE);
-			rect.setStroke(Color.DARKGREEN);
+			Color c = i >= heapsortIndex ? Color.BLUE : Color.DARKGREEN;
+			rect.setStroke(c);
 			rect.setStrokeWidth(3);
 			stack.getChildren().add(rect);
 			
