@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import javafx.util.Pair;
 
 public class Heap {
 	ArrayList<Integer> array;
@@ -67,8 +68,8 @@ public class Heap {
 		}
 	}
 	
-	//Rimette a posto il nodo in posizione i (O(logn))
-	private void restore(int i, int n) {
+	//Rimette a posto il nodo in posizione i (O(logn)) e ritorna la nuova posizione (usata solo per disegnare)
+	private int restore(int i, int n) {
 		while(true) {
 			//nuova posizione di i
 			int newPos = i;
@@ -85,7 +86,7 @@ public class Heap {
 			}
 			
 			if(i == newPos) {
-				break;
+				return i;
 			}
 			
 			Integer temp = array.get(newPos);
@@ -183,6 +184,38 @@ public class Heap {
 		}
 	}
 	
+	public Pair<Integer, Integer> makeHeapNextStep(int i) {
+		int newPos = restore(i, array.size());
+		if(i > 0) {
+			return new Pair<Integer, Integer>(i - 1, newPos);	
+		} else {
+			return new Pair<Integer, Integer>(null, newPos);
+		}
+	}
+	
+	public Integer makeHeapFirstStep() {
+		int i = array.size() / 2 - 1;
+		return i;
+	}
+	
+	public Integer heapsortNextStep(int i) {
+		i--;
+		Integer temp = array.get(i);
+		array.set(i, array.get(0));
+		array.set(0, temp);
+		restore(0, i);
+		
+		if(i > 0) {
+			return i;
+		} else {
+			return null;
+		}
+	}
+	
+	public Integer heapsortFirstStep() {
+		int i = array.size();
+		return i;
+	}
 	public void heapsort() {
 		makeHeap();
 		for(int i = array.size() - 1; i > 0; i--) {

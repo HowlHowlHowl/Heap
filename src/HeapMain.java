@@ -1,13 +1,10 @@
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Scanner;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.geometry.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
@@ -23,7 +20,12 @@ public class HeapMain extends Application {
 	}
 
 	Lesson currentLesson = Lesson.HEAP;
-
+	Scene menuScene;
+	Scene lessonScene;
+	
+	public void setLesson(Lesson lesson) {
+	}
+	
 	@Override
 	public void start(Stage primaryStage) {
 		Path currentRelativePath = Paths.get("");
@@ -69,11 +71,41 @@ public class HeapMain extends Application {
 		});
 		
 		rightPane.getChildren().add(lessonFinished);
-		
 		root.setRight(rightPane);
 
-		Scene s = new Scene(root);
-		s.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+		//Menu
+		VBox menuRoot = new VBox();
+		menuRoot.setMinSize(1200, 700);
+		Button heapLesson = new Button("Lesson Heap");
+		menuRoot.getChildren().add(heapLesson);
+		heapLesson.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				currentLesson = Lesson.HEAP;
+				lessonLabel.setText(currentLesson.toString());
+				centerPane.setLesson(currentLesson);
+				questionPane.setLesson(currentLesson);
+				questionPane.disableQuestions();
+				primaryStage.setScene(lessonScene);
+			}
+		});
+		
+		Button heapsortLesson = new Button("Lesson Heapsort");
+		menuRoot.getChildren().add(heapsortLesson);
+		heapsortLesson.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				currentLesson = Lesson.HEAPSORT;
+				lessonLabel.setText(currentLesson.toString());
+				centerPane.setLesson(currentLesson);
+				questionPane.setLesson(currentLesson);
+				questionPane.disableQuestions();
+				primaryStage.setScene(lessonScene);
+			}
+		});
+		
+		
+		EventHandler<KeyEvent> ExitOnEsc = new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent t) {
 			    if(t.getCode()==KeyCode.ESCAPE){
@@ -81,9 +113,13 @@ public class HeapMain extends Application {
 			    	sb.close();
 			    }
 			}
-		});
+		};
+		lessonScene = new Scene(root);
+		lessonScene.addEventHandler(KeyEvent.KEY_PRESSED, ExitOnEsc);
+		menuScene = new Scene(menuRoot);
+		menuScene.addEventHandler(KeyEvent.KEY_PRESSED, ExitOnEsc);
 
-		primaryStage.setScene(s);
+		primaryStage.setScene(menuScene);
 		primaryStage.setTitle("Heap AlgaT");
 		primaryStage.show();
 	 }
