@@ -30,7 +30,7 @@ import javafx.util.Pair;
 public class HeapPane extends Pane {
 
 	final static int MAX_HEAP_SIZE = 15;
-	
+
 	public enum StepState {
 		DEFAULT,
 		DONE,
@@ -42,13 +42,13 @@ public class HeapPane extends Pane {
 		MAKING_NEXT,
 		HEAPSORTING,
 	}
-	
+
 	//step controls
 	private Integer stepIndex;
 	private StepState state;
 	private Button stepButton;
 	private Button finishButton;
-	
+
 	//Heap controls
 	public TextField enterNodeField;
 	private Button removeButton;
@@ -59,18 +59,18 @@ public class HeapPane extends Pane {
 	private Integer heapsortIndex;
 	private Button heapsortButton;
 	private Button randomizeButton;
-	
+
 	//Heap drawing
 	private Heap heap;
 	private Group heapGroup;
 	private Group lessonHeapControls;
 	private Group lessonHeapsortControls;
-	
+
 	public HeapPane(double width, double height) {
 		super();
 
 		heap = new Heap();
-		
+
 		setWidth(width);
 		setHeight(height);
 		setMinSize(width, height);
@@ -78,7 +78,7 @@ public class HeapPane extends Pane {
 
 		heapGroup = new Group();
 		getChildren().add(heapGroup);
- 
+
 
 		//Lesson heap controls
 		lessonHeapControls = new Group();
@@ -90,8 +90,8 @@ public class HeapPane extends Pane {
 		Label lessonHeapLabel = new Label("Heap commands:");
 		lessonHeapBar.getChildren().add(lessonHeapLabel);
 		lessonHeapLabel.setFont(Font.font(14));
-		
-		//Add commands
+
+		//Add controls
 		HBox addBar = new HBox();
 		lessonHeapBar.getChildren().add(addBar);
 		addButton = new Button("Add");
@@ -99,12 +99,12 @@ public class HeapPane extends Pane {
 		enterNodeField = new TextField();
 		enterNodeField.setMaxWidth(30);
 		addBar.getChildren().addAll(addButton, enterNodeField);
-		
-		//Remove commands
+
+		//Remove controls
 		removeButton = new Button("Remove max");
 		removeButton.setMinWidth(100);
 		lessonHeapBar.getChildren().add(removeButton);
-		
+
 		//Lesson heapsort controls
 		lessonHeapsortControls = new Group();
 		getChildren().add(lessonHeapsortControls);
@@ -115,16 +115,16 @@ public class HeapPane extends Pane {
 		Label lessonHeapsortLabel = new Label("Heapsort commands:");
 		lessonHeapsortBar.getChildren().add(lessonHeapsortLabel);
 		lessonHeapsortLabel.setFont(Font.font(14));
-		
+
 		heapsortButton = new Button("Heapsort");
 		lessonHeapsortBar.getChildren().add(heapsortButton);
 		heapsortButton.setMinWidth(100);
 		randomizeButton = new Button("Randomize");
 		lessonHeapsortBar.getChildren().add(randomizeButton);
 		randomizeButton.setMinWidth(100);
-		
-		
-		//Step commands
+
+
+		//Step controls
 		VBox stepBar = new VBox();
 		stepBar.setLayoutX(200);
 		stepBar.setLayoutY(height - 75);
@@ -136,7 +136,7 @@ public class HeapPane extends Pane {
 		finishButton = new Button("Finish");
 		finishButton.setMinWidth(100);
 		stepBar.getChildren().addAll(stepLabel, stepButton, finishButton);
-		
+
 		addButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -146,11 +146,11 @@ public class HeapPane extends Pane {
 				String valueString = enterNodeField.getText();
 				stepIndex = heap.insertFirstStep(Integer.parseInt(valueString));
 				setState(StepState.ADDING);
-				
+
 				drawHeap();
 			}
 		});
-		
+
 		removeButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -162,7 +162,7 @@ public class HeapPane extends Pane {
 				drawHeap();
 			}
 		});
-		
+
 		stepButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -170,7 +170,7 @@ public class HeapPane extends Pane {
 				drawHeap();
 			}
 		});
-		
+
 		finishButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -187,7 +187,7 @@ public class HeapPane extends Pane {
 				addButton.setDisable(!(newValue.matches("^[0-9]{1,2}$") && heap.size() < MAX_HEAP_SIZE));
 			}
 		});
-		
+
 		heapsortButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -196,7 +196,7 @@ public class HeapPane extends Pane {
 				drawHeap();
 			}
 		});
-		
+
 		randomizeButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -206,11 +206,11 @@ public class HeapPane extends Pane {
 		});
 
 		widthProperty().addListener((a, b, c) -> { drawHeap(); });
-		
+
 		setState(StepState.DEFAULT);
 		setLesson(Lesson.HEAP);
 	}
-	
+
 	public void setState(StepState s) {
 		state = s;
 		switch(state) {
@@ -228,7 +228,7 @@ public class HeapPane extends Pane {
 				randomizeButton.setDisable(false);
 				heapsortButton.setDisable(false);
 			break;
-			
+
 			case REMOVING:
 			case ADDING:
 				stepButton.setDisable(false);
@@ -242,27 +242,27 @@ public class HeapPane extends Pane {
 			case DONE:
 				stepButton.setText("Done");
 			break;
-			
+
 			case MAKING:
 				stepButton.setText("Restore");
 				stepButton.setDisable(false);
 				finishButton.setDisable(false);
-				
+
 				randomizeButton.setDisable(true);
 				heapsortButton.setDisable(true);
 			break;
-			
+
 			case MAKING_NEXT:
 				stepButton.setText("Next");
 			break;
-			
+
 			case HEAPSORTING:
-				stepIndex = 0; //stepIndex always stays at root during heapsort
+				stepIndex = 0;
 				stepButton.setText("Swap root");
 			break;
 		}
 	}
-	
+
 	public void step() {
 		switch(state) {
 			case REMOVING: {
@@ -273,7 +273,7 @@ public class HeapPane extends Pane {
 					stepIndex = newStepIndex;
 				}
 			} break;
-			
+
 			case ADDING: {
 				Integer newStepIndex = heap.insertNextStep(stepIndex);
 				if(newStepIndex == null) {
@@ -282,18 +282,18 @@ public class HeapPane extends Pane {
 					stepIndex = newStepIndex;
 				}
 			} break;
-	
+
 			case DONE: {
 				setState(StepState.DEFAULT);
 			} break;
-			
+
 			case MAKING: {
 				Pair<Integer, Integer> results = heap.makeHeapNextStep(stepIndex);
 				makeNextIndex = results.getKey();
 				stepIndex = results.getValue();
 				setState(StepState.MAKING_NEXT);
 			} break;
-			
+
 			case MAKING_NEXT: {
 				if(makeNextIndex != null) {
 					setState(StepState.MAKING);
@@ -303,7 +303,7 @@ public class HeapPane extends Pane {
 					heapsortIndex = heap.heapsortFirstStep();
 				}
 			} break;
-			
+
 			case HEAPSORTING: {
 				heapsortIndex = heap.heapsortNextStep(heapsortIndex);
 				if(heapsortIndex == 1) {
@@ -313,7 +313,7 @@ public class HeapPane extends Pane {
 			} break;
 		}
 	}
-	
+
 	public void setLesson(Lesson lesson) {
 		switch(lesson) {
 		case HEAP: {
@@ -327,7 +327,7 @@ public class HeapPane extends Pane {
 				heap.insert(Math.abs(random.nextInt(100)));
 			}
 		} break;
-		
+
 		case HEAPSORT: {
 			lessonHeapsortControls.setVisible(true);
 			lessonHeapControls.setVisible(false);
@@ -339,7 +339,7 @@ public class HeapPane extends Pane {
 		setState(StepState.DEFAULT);
 		drawHeap();
 	}
-	
+
 	public void randomizeArray() {
 		//Genera un array con contenuti random (non e' un heap)
 		heap.clear();
@@ -396,7 +396,7 @@ public class HeapPane extends Pane {
 			Circle circle = new Circle(x, y, 25);
 			circle.setStrokeWidth(4);
 			if(stepIndex != null && i == stepIndex) {
-				Color c = state == StepState.DONE || state == StepState.MAKING_NEXT ? Color.BLUE : Color.ORANGERED; 
+				Color c = state == StepState.DONE || state == StepState.MAKING_NEXT ? Color.BLUE : Color.ORANGERED;
 				circle.setStroke(c);
 			} else {
 				circle.setStroke(Color.DARKGREEN);
@@ -406,17 +406,15 @@ public class HeapPane extends Pane {
 				circle.setStroke(Color.BLUE);
 			}
 			circle.setFill(Color.WHITE);
-			
-			
+
+
 			heapGroup.getChildren().add(circle);
-			
+
 			Text indexText = new Text(x - 5, y - 30, Integer.toString(i));
 			indexText.setFont(Font.font(14));
 			heapGroup.getChildren().add(indexText);
-			
 
-			//-12, -6 e + 6 sono belli hardcoded perche' i geni che hanno fatto JavaFx non hanno ancora
-			// scoperto che magari uno il testo lo vuole centrato, PORCA MADONNA
+
 			int textOffset;
 			Integer value = heapArray.get(i);
 			if(value > 9) {
@@ -428,11 +426,11 @@ public class HeapPane extends Pane {
 			nodeText.setFont(Font.font(20));
 			heapGroup.getChildren().add(nodeText);
 		}
-		
+
 		for(int i = 0; i < MAX_HEAP_SIZE; i++) {
 			double x = 70 + 50 * i;
 			double y = 410;
-			
+
 			StackPane stack = new StackPane();
 			Rectangle rect = new Rectangle(50, 50);
 			rect.setFill(Color.WHITE);
@@ -440,19 +438,19 @@ public class HeapPane extends Pane {
 			rect.setStroke(c);
 			rect.setStrokeWidth(3);
 			stack.getChildren().add(rect);
-			
+
 			if(i < heapArray.size()) {
 				Text text = new Text(heapArray.get(i).toString());
 				text.setFont(Font.font(20));
 				stack.getChildren().add(text);
 			}
-			
+
 			stack.setLayoutX(x);
 			stack.setLayoutY(y);
-			
+
 			Text indexText = new Text(x + 20, y - 7, Integer.toString(i));
 			indexText.setFont(Font.font(14));
-			
+
 			heapGroup.getChildren().add(indexText);
 			heapGroup.getChildren().add(stack);
 		}

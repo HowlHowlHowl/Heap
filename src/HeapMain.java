@@ -22,10 +22,7 @@ public class HeapMain extends Application {
 	Lesson currentLesson = Lesson.HEAP;
 	Scene menuScene;
 	Scene lessonScene;
-	
-	public void setLesson(Lesson lesson) {
-	}
-	
+
 	@Override
 	public void start(Stage primaryStage) {
 		Path currentRelativePath = Paths.get("");
@@ -40,12 +37,12 @@ public class HeapMain extends Application {
 		QuestionPane questionPane = new QuestionPane(900,150);
 		root.setBottom(questionPane);
 
-		VBox rightPane = new VBox();
-		rightPane.setPrefSize(300, 550);
-		rightPane.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+		VBox lessonPane = new VBox();
+		lessonPane.setPrefSize(300, 550);
+		lessonPane.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
 		Label lessonLabel = new Label("HEAP");
 		lessonLabel.setFont(Font.font(20));
-		rightPane.getChildren().add(lessonLabel);
+		lessonPane.getChildren().add(lessonLabel);
 		Button changeLessonButton = new Button("Change lesson");
 		changeLessonButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -61,7 +58,7 @@ public class HeapMain extends Application {
 				questionPane.disableQuestions();
 			}
 		});
-		rightPane.getChildren().add(changeLessonButton);
+		lessonPane.getChildren().add(changeLessonButton);
 		Button lessonFinished = new Button("Lesson finished");
 		lessonFinished.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -69,16 +66,12 @@ public class HeapMain extends Application {
 				questionPane.enableQuestions();
 			}
 		});
-		
-		rightPane.getChildren().add(lessonFinished);
-		root.setRight(rightPane);
+
+		lessonPane.getChildren().add(lessonFinished);
+		root.setLeft(lessonPane);
 
 		//Menu
-		VBox menuRoot = new VBox();
-		menuRoot.setMinSize(1200, 700);
-		Button heapLesson = new Button("Lesson Heap");
-		menuRoot.getChildren().add(heapLesson);
-		heapLesson.setOnAction(new EventHandler<ActionEvent>() {
+		EventHandler<ActionEvent> onOpenHeap = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				currentLesson = Lesson.HEAP;
@@ -88,11 +81,9 @@ public class HeapMain extends Application {
 				questionPane.disableQuestions();
 				primaryStage.setScene(lessonScene);
 			}
-		});
+		};
 		
-		Button heapsortLesson = new Button("Lesson Heapsort");
-		menuRoot.getChildren().add(heapsortLesson);
-		heapsortLesson.setOnAction(new EventHandler<ActionEvent>() {
+		EventHandler<ActionEvent> onOpenHeapsort = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				currentLesson = Lesson.HEAPSORT;
@@ -102,21 +93,23 @@ public class HeapMain extends Application {
 				questionPane.disableQuestions();
 				primaryStage.setScene(lessonScene);
 			}
-		});
+		};
 		
+		AlgaTMenu menu = new AlgaTMenu(1200, 700, onOpenHeap, onOpenHeapsort);
 		
-		EventHandler<KeyEvent> ExitOnEsc = new EventHandler<KeyEvent>() {
+
+
+		final EventHandler<KeyEvent> ExitOnEsc = new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent t) {
 			    if(t.getCode()==KeyCode.ESCAPE){
-			    	Stage sb = (Stage)root.getScene().getWindow();
-			    	sb.close();
+			    	primaryStage.close();
 			    }
 			}
 		};
 		lessonScene = new Scene(root);
 		lessonScene.addEventHandler(KeyEvent.KEY_PRESSED, ExitOnEsc);
-		menuScene = new Scene(menuRoot);
+		menuScene = new Scene(menu);
 		menuScene.addEventHandler(KeyEvent.KEY_PRESSED, ExitOnEsc);
 
 		primaryStage.setScene(menuScene);
