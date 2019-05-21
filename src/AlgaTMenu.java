@@ -25,12 +25,12 @@ public class AlgaTMenu extends VBox {
 		title2.setFont(Font.font("courier", FontWeight.SEMI_BOLD, 30));
 		title2.setTextFill(Color.DARKGREEN);
 		
-		Button heapLesson = new Button("Lesson Heap");
+		Button heapLesson = new Button("Struttura dati heap");
 		getChildren().add(heapLesson);
 		heapLesson.setOnAction(onOpenHeap);
 		heapLesson.setMinWidth(200);
 		
-		Button heapsortLesson = new Button("Lesson Heapsort");
+		Button heapsortLesson = new Button("Algoritmo heapsort");
 		getChildren().add(heapsortLesson);
 		heapsortLesson.setOnAction(onOpenHeapsort);
 		heapsortLesson.setMinWidth(200);

@@ -42,6 +42,7 @@ public class QuestionPane extends HBox {
 
 
 	public TextField answerField;
+	public boolean isActive;
 
 
 	public QuestionPane(double width, double height){
@@ -217,6 +218,7 @@ public class QuestionPane extends HBox {
 		
 	}
 	void setLesson(Lesson lesson) {
+		isActive = false;
 		questionsIndex=0;
 		readQuestions(lesson);
 		setActiveQuestion(0);
@@ -231,9 +233,12 @@ public class QuestionPane extends HBox {
 	}
 	
 	void enableQuestions() {
-		setActiveQuestion(0);
-		setDisable(false);
-		toggleLayout.setDisable(false);
+		if(!isActive) {
+			isActive = true;
+			setActiveQuestion(0);
+			setDisable(false);
+			toggleLayout.setDisable(false);
+		}
 	}
 
 	void setActiveQuestion(int i) {
