@@ -5,6 +5,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -48,13 +50,13 @@ public class QuestionPane extends HBox {
 		setHeight(height);
 		setSpacing(90);
 		setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
-		question = new Label("Here is the question...");
+		question = new Label("");
 		question.setFont(Font.font("courier", 20));
 		question.setMinWidth(600);
 		question.setMaxWidth(600);
 		question.setMinHeight(150);
 		question.setWrapText(true);
-		
+
 		q1 = new Text("");
 		q1.setFont(Font.font("courier", 20));
 		//Prev e Next Scene
@@ -96,7 +98,7 @@ public class QuestionPane extends HBox {
 		dxQuest.getChildren().addAll(prevNextLayout,q1,answerField,txtSub);
 		dxQuest.setPadding(new Insets(0,10,0,20));
 		dxQuest.setSpacing(0.0);
-		answerField.setPromptText("Write your answere here");
+		answerField.setPromptText("Rispondi qui");
 
 		submit = new Button("Submit");
 		submit.setFont(Font.font(30));
@@ -108,7 +110,7 @@ public class QuestionPane extends HBox {
 		txtSub.setPrefWidth(100);
 		txtSub.setPrefHeight(20);
 		txtSub.setSpacing(10.0);
-		
+
 		sxQuest = new VBox();
 		sxQuest.setPadding(new Insets(20,0,0,20));
 		sxQuest.getChildren().addAll(question);
@@ -117,7 +119,7 @@ public class QuestionPane extends HBox {
 		setPadding(new Insets(0,0,0,0));
 
 		setLesson(Lesson.HEAP);
-		
+
 		EventHandler<ActionEvent> answrd =new EventHandler<ActionEvent>(){
 		@Override
 		public void handle(ActionEvent e){
@@ -131,7 +133,7 @@ public class QuestionPane extends HBox {
 						q1.setFill(Color.GREEN);
 						buttonList.get(activeIndex).setTextFill(Color.LIMEGREEN);
 						if(risCor.get(answers.size()-1)==true)
-							question.setText( "You answered correctly to all the questions.\nCongratulations!\nYou can now advance to a new lesson!");
+							question.setText( "Congratulazioni hai risposto a tutte le domande correttamente! Torna al menu per scegliere un altra lezione!");
 					}
 					else if (risCor.get(activeIndex)!=true){
 						q1.setText("Wrong");
@@ -146,11 +148,7 @@ public class QuestionPane extends HBox {
 		};
 		submit.setOnAction(answrd);
 		answerField.setOnAction(answrd);
-		
-		if(answers.size() != questions.size()) {
-			System.out.println("Invalid questions");
-			System.exit(1);
-		}
+
 		toggleLayout.setDisable(true);
 
 		disableQuestions();
@@ -164,7 +162,11 @@ public class QuestionPane extends HBox {
 			File file = new File("src/",fileName);
 			jerry = new Scanner(file);
 		} catch(Exception e1){
-			System.out.println("Exception sul file");
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("AlgaT Error");
+			alert.setHeaderText("File error");
+			alert.setContentText("Impossibile aprire il file con le domande!");
+			alert.showAndWait();
 			System.exit(1);
 		}
 
@@ -175,14 +177,26 @@ public class QuestionPane extends HBox {
 		buttonList =new ArrayList<ToggleButton>();
 		while(jerry.hasNext()){
 			String qString = jerry.next().trim();
-			if(qString != "")
-				questions.add(qString);
+			if(qString.isEmpty()) {
+				break;
+			}
+			questions.add(qString);
 			if(jerry.hasNext()) {
 				answers.add(jerry.next());
 				risCor.add(false);
 			}
 		}
 		jerry.close();
+		
+		if(answers.size() != questions.size()) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("AlgaT Error");
+			alert.setHeaderText("File error");
+			alert.setContentText("Il file con le domande non è corretto!");
+			alert.showAndWait();
+			System.exit(1);
+		}
+		
 		if(toggleLayout != null) {
 			dxQuest.getChildren().remove(toggleLayout);
 		}
@@ -204,7 +218,7 @@ public class QuestionPane extends HBox {
 		}
 
 		dxQuest.getChildren().add(toggleLayout);
-		
+
 	}
 	void setLesson(Lesson lesson) {
 		isActive = false;
@@ -213,20 +227,21 @@ public class QuestionPane extends HBox {
 		setActiveQuestion(0);
 		q1.setText("");
 		answerField.clear();
-		answerField.setPromptText("Write your answere here");
+		answerField.setPromptText("Rispondi qui");
 	}
-	
+
 	void disableQuestions() {
-		question.setText("Questions will appear after you finish the lesson");
+		question.setText("Le domande appariranno dopo che hai concluso la lezione");
 		setDisable(true);
 	}
-	
+
 	void enableQuestions() {
 		if(!isActive) {
 			isActive = true;
 			setActiveQuestion(0);
 			setDisable(false);
 			toggleLayout.setDisable(false);
+			answerField.requestFocus();
 		}
 	}
 
@@ -235,37 +250,28 @@ public class QuestionPane extends HBox {
 			answerField.clear();
 			if(i >= 0 && i < answers.size()) {
 				activeIndex = i;
-				if(i > 0) {
-					prev.setDisable(false);
-				}
-				if(i < answers.size() - 1) {
-					next.setDisable(false);
-				}
-				if(i == 0) {
-					prev.setDisable(true);
-				}
-				if(i == answers.size() - 1) {
-					next.setDisable(true);
-				}
+				prev.setDisable(i == 0);
+				next.setDisable(i == answers.size() - 1);
 				if(risCor.get(i)==true) {
 					answerField.setPromptText(answers.get(i));
 				} else {
 
-					answerField.setPromptText("Write your answer here");
+					answerField.setPromptText("Rispondi qui");
 				}
-	
+
 				for(int j = 0; j < buttonList.size(); j++) {
 					buttonList.get(j).setSelected(false);
 				}
 				buttonList.get(i).setSelected(true);
-	
+
 				question.setText(questions.get(i));
 				q1.setText("Domanda n°"+ (i + 1));
 				q1.setFill(Color.BLACK);
+				answerField.requestFocus();
 			}
 		} else {
 			q1.setFill(Color.BLACK);
-			q1.setText("You have to answer this question before...");
+			q1.setText("Rispondi prima alle domande precedenti!");
 		}
 	}
 }

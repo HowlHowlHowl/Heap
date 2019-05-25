@@ -87,21 +87,21 @@ public class HeapPane extends Pane {
 		lessonHeapControls.getChildren().add(lessonHeapBar);
 		lessonHeapBar.setLayoutX(20);
 		lessonHeapBar.setLayoutY(height - 75);
-		Label lessonHeapLabel = new Label("Heap commands:");
+		Label lessonHeapLabel = new Label("Comandi Heap:");
 		lessonHeapBar.getChildren().add(lessonHeapLabel);
 		lessonHeapLabel.setFont(Font.font(14));
 
 		//Add controls
 		HBox addBar = new HBox();
 		lessonHeapBar.getChildren().add(addBar);
-		addButton = new Button("Add");
+		addButton = new Button("Aggiungi");
 		addButton.setMinWidth(70);
 		enterNodeField = new TextField();
 		enterNodeField.setMaxWidth(30);
 		addBar.getChildren().addAll(addButton, enterNodeField);
 
 		//Remove controls
-		removeButton = new Button("Remove max");
+		removeButton = new Button("Rimuovi max");
 		removeButton.setMinWidth(100);
 		lessonHeapBar.getChildren().add(removeButton);
 
@@ -112,7 +112,7 @@ public class HeapPane extends Pane {
 		lessonHeapsortControls.getChildren().add(lessonHeapsortBar);
 		lessonHeapsortBar.setLayoutX(20);
 		lessonHeapsortBar.setLayoutY(height - 75);
-		Label lessonHeapsortLabel = new Label("Heapsort commands:");
+		Label lessonHeapsortLabel = new Label("Comandi Heapsort:");
 		lessonHeapsortBar.getChildren().add(lessonHeapsortLabel);
 		lessonHeapsortLabel.setFont(Font.font(14));
 
@@ -129,11 +129,11 @@ public class HeapPane extends Pane {
 		stepBar.setLayoutX(200);
 		stepBar.setLayoutY(height - 75);
 		getChildren().add(stepBar);
-		Label stepLabel = new Label("Step commands:");
+		Label stepLabel = new Label("Comandi di step:");
 		stepLabel.setFont(Font.font(14));
 		stepButton = new Button("Step");
 		stepButton.setMinWidth(100);
-		finishButton = new Button("Finish");
+		finishButton = new Button("Finisci");
 		finishButton.setMinWidth(100);
 		stepBar.getChildren().addAll(stepLabel, stepButton, finishButton);
 

@@ -20,10 +20,6 @@ public class HeapMain extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
-		Path currentRelativePath = Paths.get("");
-		String pathString = currentRelativePath.toAbsolutePath().toString();
-		System.out.println("Current relative path is: " + pathString);
-
 		BorderPane root = new BorderPane();
 
 		HeapPane centerPane = new HeapPane(900, 550);
@@ -38,14 +34,14 @@ public class HeapMain extends Application {
 				questionPane.enableQuestions();
 			}
 		};
-		
+
 		EventHandler<ActionEvent> onReturnToMenu = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				primaryStage.setScene(menuScene);
 			}
 		};
-		
+
 		LessonPane lessonPane = new LessonPane(350, 550, onLessonFinished, onReturnToMenu);
 		root.setLeft(lessonPane);
 
@@ -61,7 +57,7 @@ public class HeapMain extends Application {
 				primaryStage.setScene(lessonScene);
 			}
 		};
-		
+
 		EventHandler<ActionEvent> onOpenHeapsort = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -73,9 +69,9 @@ public class HeapMain extends Application {
 				primaryStage.setScene(lessonScene);
 			}
 		};
-		
+
 		AlgaTMenu menu = new AlgaTMenu(1200, 700, onOpenHeap, onOpenHeapsort);
-		
+
 
 
 		final EventHandler<KeyEvent> ExitOnEsc = new EventHandler<KeyEvent>() {

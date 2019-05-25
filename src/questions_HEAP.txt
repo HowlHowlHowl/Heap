@@ -1,4 +1,6 @@
 Quanti figli ha al massimo il nodo di un heap?|2.
-Dato un Max-Heap contenente i valori (3, 20, 13, 47, 34, 19) quale di essi si trova alla radice?|47.
-Dato un Array di 30 Elementi, in in che posizione si trova il padre di un figlio sinistro in posizione 13?|27.
-Qual'è il costo computazionale di due estrazioni consecutive e un inserimento in un albero di 15 nodi?|O(log 15).
+Dato un Max-Heap contenente i valori (3, 20, 13, 47, 34, 19) qual'è il valore alla radice?|47.
+In che posizione si trova il padre di un nodo in posizione 28?|13.
+Dato un Heap di 30 elementi, quanti figli ha il nodo in posizione 23?|0.
+Dato un Max-Heap con gli elementi (3, 15, 7) è possibile sapere quale nodo è in posizione 2?|no.
+Qual'è il costo computazionale di due estrazioni consecutive e un inserimento in un albero di n nodi?|O(log n).
