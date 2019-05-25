@@ -38,8 +38,6 @@ public class QuestionPane extends HBox {
 	private ArrayList<String> answers;
 	private ArrayList<Boolean> risCor;
 	private ArrayList<ToggleButton> buttonList;
-
-
 	public TextField answerField;
 	public boolean isActive;
 
@@ -124,21 +122,16 @@ public class QuestionPane extends HBox {
 		@Override
 		public void handle(ActionEvent e){
 				if(answerField.getText() != null && !answerField.getText().isEmpty()) {
-					String A = new String(answers.get(activeIndex).trim());
-					if(A.equalsIgnoreCase(answerField.getText())) {
+					String A = new String(answers.get(activeIndex).replaceAll("\\s", ""));
+					String B = new String (answerField.getText().replaceAll("\\s",""));
+					if(A.equalsIgnoreCase(B)) {
 						questionsIndex++;
 						risCor.set(activeIndex, true);
 						q1.setText("Right");
 						q1.setFill(Color.GREEN);
 						buttonList.get(activeIndex).setTextFill(Color.LIMEGREEN);
-						boolean T = true;
-						for(int k = 0; k < risCor.size(); k++) {
-							if(risCor.get(k).equals(false))
-								T = false;
-						}
-						if(T == true) {
-							question.setText( "You answered correctly to all the questions.\nCongratulations!");
-						}
+						if(risCor.get(answers.size()-1)==true)
+							question.setText( "You answered correctly to all the questions.\nCongratulations!\nYou can now advance to a new lesson!");
 					}
 					else if (risCor.get(activeIndex)!=true){
 						q1.setText("Wrong");
