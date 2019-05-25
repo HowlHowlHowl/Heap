@@ -10,7 +10,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
@@ -49,6 +48,7 @@ public class QuestionPane extends HBox {
 		super();
 		setWidth(width);
 		setHeight(height);
+		setSpacing(90);
 		setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
 		question = new Label("Here is the question...");
 		question.setFont(Font.font("courier", 20));
@@ -57,9 +57,7 @@ public class QuestionPane extends HBox {
 		question.setMinHeight(150);
 		question.setWrapText(true);
 		
-		q1 = new Text("Click anywhere.");
-
-
+		q1 = new Text("");
 		q1.setFont(Font.font("courier", 20));
 		//Prev e Next Scene
 		prev = new Button("<< Prev");
@@ -89,7 +87,7 @@ public class QuestionPane extends HBox {
 		TilePane prevNextLayout = new TilePane(Orientation.HORIZONTAL);
 		prevNextLayout.setHgap(50.0);
 		prevNextLayout.getChildren().addAll(prev,next);
-		prevNextLayout.setPadding(new Insets(20,40,10,30));
+		prevNextLayout.setPadding(new Insets(20,20,0,30));
 
 
 		answerField = new TextField();
@@ -98,7 +96,7 @@ public class QuestionPane extends HBox {
 
 		dxQuest = new VBox();
 		dxQuest.getChildren().addAll(prevNextLayout,q1,answerField,txtSub);
-		dxQuest.setPadding(new Insets(0,10,0,10));
+		dxQuest.setPadding(new Insets(0,10,0,20));
 		dxQuest.setSpacing(0.0);
 		answerField.setPromptText("Write your answere here");
 
@@ -110,7 +108,7 @@ public class QuestionPane extends HBox {
 
 		txtSub.getChildren().addAll(answerField, submit);
 		txtSub.setPrefWidth(100);
-		txtSub.setPrefHeight(60);
+		txtSub.setPrefHeight(20);
 		txtSub.setSpacing(10.0);
 		
 		sxQuest = new VBox();
@@ -139,7 +137,7 @@ public class QuestionPane extends HBox {
 								T = false;
 						}
 						if(T == true) {
-							question.setText( "You answered correctly to all the questions.\nCongratulations!\nYou can now advance to the next lesson");
+							question.setText( "You answered correctly to all the questions.\nCongratulations!");
 						}
 					}
 					else if (risCor.get(activeIndex)!=true){
@@ -163,8 +161,6 @@ public class QuestionPane extends HBox {
 		toggleLayout.setDisable(true);
 
 		disableQuestions();
-		//System.out.println(answers.size());
-		//System.out.println(questions.size());
 	}
 
 	void readQuestions(Lesson lesson) {
@@ -179,7 +175,7 @@ public class QuestionPane extends HBox {
 			System.exit(1);
 		}
 
-		jerry.useDelimiter("[?.]");
+		jerry.useDelimiter("[|.]");
 		questions = new ArrayList<String>();
 		answers = new ArrayList<String>();
 		risCor = new ArrayList<Boolean>();
@@ -198,7 +194,7 @@ public class QuestionPane extends HBox {
 			dxQuest.getChildren().remove(toggleLayout);
 		}
 		toggleLayout = new HBox();
-		toggleLayout.setPadding(new Insets (5,0,0,0));
+		toggleLayout.setPadding(new Insets (5,0,15,0));
 		ToggleGroup domande = new ToggleGroup();
 		for(int j = 0; j < answers.size(); j++) {
 			 ToggleButton choice = new ToggleButton(""+(j+1));
@@ -257,6 +253,12 @@ public class QuestionPane extends HBox {
 				}
 				if(i == answers.size() - 1) {
 					next.setDisable(true);
+				}
+				if(risCor.get(i)==true) {
+					answerField.setPromptText(answers.get(i));
+				} else {
+
+					answerField.setPromptText("Write your answer here");
 				}
 	
 				for(int j = 0; j < buttonList.size(); j++) {

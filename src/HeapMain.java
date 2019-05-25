@@ -1,17 +1,12 @@
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import javafx.application.Application;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.*;
-import javafx.scene.text.*;
 import javafx.stage.Stage;
 
 public class HeapMain extends Application {
