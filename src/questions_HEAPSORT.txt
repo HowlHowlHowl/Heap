@@ -1,5 +1,5 @@
 Qual'è la complessità dell'algoritmo necessario per costruire un Heap?|O(nlogn).
 Dato un Heap di 12 elementi, qual'è l'indice dell'elemento da cui bisogna partire per costruire l'Heap?|5.
 Richiede più operazione costruire un Max-Heap partendo da un array ordinato in ordine crescente o decrescente?|Decrescente.
-Esistono algoritmi di ordinamento basati sui confronti con complessità migliore dell'Heapsort?|no.
-Se utlizzassimo un Min-Heap per l'algoritmo in che ordine risulterebbe l'array dopo l'esecuzione?|decrescente.
+Esistono algoritmi di ordinamento basati sui confronti con complessità migliore dell'Heapsort?|No.
+Se utlizzassimo un Min-Heap per l'algoritmo in che ordine risulterebbe l'array dopo l'esecuzione?|Decrescente.

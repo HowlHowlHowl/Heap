@@ -249,6 +249,16 @@ public class QuestionPane extends HBox {
 		if(i<=questionsIndex){
 			answerField.clear();
 			if(i >= 0 && i < answers.size()) {
+				if(i==questionsIndex){
+					answerField.requestFocus();
+					answerField.setFocusTraversable(true);
+				}
+				else{
+					
+					buttonList.get(i).setFocusTraversable(true);
+					buttonList.get(i).requestFocus();
+				}
+			}
 				activeIndex = i;
 				prev.setDisable(i == 0);
 				next.setDisable(i == answers.size() - 1);
@@ -267,8 +277,7 @@ public class QuestionPane extends HBox {
 				question.setText(questions.get(i));
 				q1.setText("Domanda n°"+ (i + 1));
 				q1.setFill(Color.BLACK);
-				answerField.requestFocus();
-			}
+			
 		} else {
 			q1.setFill(Color.BLACK);
 			q1.setText("Rispondi prima alle domande precedenti!");
