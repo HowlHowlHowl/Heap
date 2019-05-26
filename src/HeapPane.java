@@ -311,6 +311,10 @@ public class HeapPane extends Pane {
 					setState(StepState.DONE);
 				}
 			} break;
+
+			case DEFAULT: {
+
+			}break;
 		}
 	}
 
@@ -351,6 +355,7 @@ public class HeapPane extends Pane {
 		heap.setArray(heapArray);
 	}
 
+	//Ritorna un punto in base all'indice di un elemento dell'heap passato
 	public Point2D getPositionOfHeapIndex(int i) {
 		int depth = Utils.intLog2(i + 1);
 		int numChildrenAtDepth = Utils.intPow(2, depth);

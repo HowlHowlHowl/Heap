@@ -26,23 +26,24 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 public class QuestionPane extends HBox {
+	private ArrayList<String> answers;
+	private ArrayList<String> questions;
+	private ArrayList<Boolean> risCor;
+	
+	private HBox toggleLayout;
+	private ArrayList<ToggleButton> buttonList;
 	private Button prev;
 	private Button next;
 	private Button submit;
-	private ArrayList<String> questions;
+	
 	private Label question;
-	private Text q1;
-	private VBox dxQuest;
-	private VBox sxQuest;
-	private HBox toggleLayout;
+	private Text questionResult;
+	public TextField answerField;
+	
+	public boolean isActive;
 	private Integer questionsIndex = 0;
 	private Integer activeIndex = 0;
-	private ArrayList<String> answers;
-	private ArrayList<Boolean> risCor;
-	private ArrayList<ToggleButton> buttonList;
-	public TextField answerField;
-	public boolean isActive;
-
+	
 
 	public QuestionPane(double width, double height){
 		super();
@@ -57,8 +58,8 @@ public class QuestionPane extends HBox {
 		question.setMinHeight(150);
 		question.setWrapText(true);
 
-		q1 = new Text("");
-		q1.setFont(Font.font("courier", 20));
+		questionResult = new Text("");
+		questionResult.setFont(Font.font("courier", 20));
 		//Prev e Next Scene
 		prev = new Button("<< Prev");
 		prev.setFont(Font.font(15));
@@ -86,23 +87,27 @@ public class QuestionPane extends HBox {
 
 		TilePane prevNextLayout = new TilePane(Orientation.HORIZONTAL);
 		prevNextLayout.setHgap(50.0);
-		prevNextLayout.getChildren().addAll(prev,next);
+		prevNextLayout.getChildren().addAll(prev, next);
 		prevNextLayout.setPadding(new Insets(20,20,0,30));
 
 
 		answerField = new TextField();
-		answerField.setFont(Font.font("courier",FontWeight.BOLD,30));
+		answerField.setFont(Font.font("courier", FontWeight.BOLD,30));
 		final HBox txtSub = new HBox();
 
-		dxQuest = new VBox();
-		dxQuest.getChildren().addAll(prevNextLayout,q1,answerField,txtSub);
+		VBox dxQuest = new VBox();
+		dxQuest.getChildren().addAll(prevNextLayout, questionResult, answerField, txtSub);
 		dxQuest.setPadding(new Insets(0,10,0,20));
 		dxQuest.setSpacing(0.0);
 		answerField.setPromptText("Rispondi qui");
 
+		toggleLayout = new HBox();
+		toggleLayout.setPadding(new Insets (5,0,15,0));
+		dxQuest.getChildren().add(toggleLayout);
+
+		
 		submit = new Button("Submit");
 		submit.setFont(Font.font(30));
-
 		submit.setMinWidth(txtSub.getPrefWidth());
 		submit.setMinHeight(txtSub.getPrefHeight());
 
@@ -110,8 +115,8 @@ public class QuestionPane extends HBox {
 		txtSub.setPrefWidth(100);
 		txtSub.setPrefHeight(20);
 		txtSub.setSpacing(10.0);
-
-		sxQuest = new VBox();
+		
+		VBox sxQuest = new VBox();
 		sxQuest.setPadding(new Insets(20,0,0,20));
 		sxQuest.getChildren().addAll(question);
 
@@ -129,15 +134,15 @@ public class QuestionPane extends HBox {
 					if(A.equalsIgnoreCase(B)) {
 						questionsIndex++;
 						risCor.set(activeIndex, true);
-						q1.setText("Right");
-						q1.setFill(Color.GREEN);
+						questionResult.setText("Right");
+						questionResult.setFill(Color.GREEN);
 						buttonList.get(activeIndex).setTextFill(Color.LIMEGREEN);
 						if(risCor.get(answers.size()-1)==true)
 							question.setText( "Congratulazioni hai risposto a tutte le domande correttamente! Torna al menu per scegliere un altra lezione!");
 					}
 					else if (risCor.get(activeIndex)!=true){
-						q1.setText("Wrong");
-						q1.setFill(Color.RED);
+						questionResult.setText("Wrong");
+						questionResult.setFill(Color.RED);
 						buttonList.get(activeIndex).setTextFill(Color.RED);;
 					}
 				}
@@ -148,7 +153,6 @@ public class QuestionPane extends HBox {
 		};
 		submit.setOnAction(answrd);
 		answerField.setOnAction(answrd);
-
 		toggleLayout.setDisable(true);
 
 		disableQuestions();
@@ -156,10 +160,10 @@ public class QuestionPane extends HBox {
 
 	void readQuestions(Lesson lesson) {
 		String fileName = "questions_" + lesson.toString() + ".txt";
-		//read questions
+		//Leggi domande
 		Scanner jerry = null;
 		try {
-			File file = new File("src/",fileName);
+			File file = new File(fileName);
 			jerry = new Scanner(file);
 		} catch(Exception e1){
 			Alert alert = new Alert(AlertType.ERROR);
@@ -197,11 +201,7 @@ public class QuestionPane extends HBox {
 			System.exit(1);
 		}
 		
-		if(toggleLayout != null) {
-			dxQuest.getChildren().remove(toggleLayout);
-		}
-		toggleLayout = new HBox();
-		toggleLayout.setPadding(new Insets (5,0,15,0));
+		toggleLayout.getChildren().clear();
 		ToggleGroup domande = new ToggleGroup();
 		for(int j = 0; j < answers.size(); j++) {
 			 ToggleButton choice = new ToggleButton(""+(j+1));
@@ -216,16 +216,13 @@ public class QuestionPane extends HBox {
 			 });
 			 toggleLayout.getChildren().add(choice);
 		}
-
-		dxQuest.getChildren().add(toggleLayout);
-
 	}
 	void setLesson(Lesson lesson) {
 		isActive = false;
 		questionsIndex=0;
 		readQuestions(lesson);
 		setActiveQuestion(0);
-		q1.setText("");
+		questionResult.setText("");
 		answerField.clear();
 		answerField.setPromptText("Rispondi qui");
 	}
@@ -248,39 +245,35 @@ public class QuestionPane extends HBox {
 	void setActiveQuestion(int i) {
 		if(i<=questionsIndex){
 			answerField.clear();
-			if(i >= 0 && i < answers.size()) {
-				if(i==questionsIndex){
-					answerField.requestFocus();
-					answerField.setFocusTraversable(true);
-				}
-				else{
-					
-					buttonList.get(i).setFocusTraversable(true);
-					buttonList.get(i).requestFocus();
-				}
+			if(i==questionsIndex){
+				answerField.setFocusTraversable(true);
+				answerField.requestFocus();
+			} else{
+				buttonList.get(i).setFocusTraversable(true);
+				buttonList.get(i).requestFocus();
 			}
-				activeIndex = i;
-				prev.setDisable(i == 0);
-				next.setDisable(i == answers.size() - 1);
-				if(risCor.get(i)==true) {
-					answerField.setPromptText(answers.get(i));
-				} else {
-
-					answerField.setPromptText("Rispondi qui");
-				}
-
-				for(int j = 0; j < buttonList.size(); j++) {
-					buttonList.get(j).setSelected(false);
-				}
-				buttonList.get(i).setSelected(true);
-
-				question.setText(questions.get(i));
-				q1.setText("Domanda n°"+ (i + 1));
-				q1.setFill(Color.BLACK);
 			
+			activeIndex = i;
+			prev.setDisable(i == 0);
+			next.setDisable(i == answers.size() - 1);
+			if(risCor.get(i)==true) {
+				answerField.setPromptText(answers.get(i));
+			} else {
+
+				answerField.setPromptText("Rispondi qui");
+			}
+
+			for(int j = 0; j < buttonList.size(); j++) {
+				buttonList.get(j).setSelected(false);
+			}
+			buttonList.get(i).setSelected(true);
+
+			question.setText(questions.get(i));
+			questionResult.setFill(Color.BLACK);
+			questionResult.setText("Domanda n°"+ (i + 1));			
 		} else {
-			q1.setFill(Color.BLACK);
-			q1.setText("Rispondi prima alle domande precedenti!");
+			questionResult.setFill(Color.BLACK);
+			questionResult.setText("Rispondi prima alle domande precedenti!");
 		}
 	}
 	

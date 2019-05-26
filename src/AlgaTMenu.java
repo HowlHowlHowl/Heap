@@ -28,12 +28,12 @@ public class AlgaTMenu extends VBox {
 		title2.setFont(Font.font("courier", FontWeight.SEMI_BOLD, 85));
 		title2.setTextFill(Color.DARKGREEN);
 		
-		Button heapLesson = new Button("Struttura dati heap");
+		Button heapLesson = new Button("Struttura dati Heap");
 		heapLesson.setOnAction(onOpenHeap);
 		heapLesson.setMinWidth(200);
 		heapLesson.setFont(Font.font("courier", 20));
 		
-		Button heapsortLesson = new Button("Algoritmo heapsort");
+		Button heapsortLesson = new Button("Algoritmo Heapsort");
 		heapsortLesson.setOnAction(onOpenHeapsort);
 		heapsortLesson.setMinWidth(200);
 		heapsortLesson.setFont(Font.font("courier", 20));
@@ -50,7 +50,7 @@ public class AlgaTMenu extends VBox {
 		credits.setFont(Font.font("courier", FontPosture.ITALIC, 15));
 		credits.setTextAlignment(TextAlignment.CENTER);
 		credits.setPadding(new Insets(100,0,0,0));
-		credits.setOpacity(0.5);
+		credits.setOpacity(0.7);
 		getChildren().add(credits);
 	}
 }

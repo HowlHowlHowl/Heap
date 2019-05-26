@@ -1,11 +1,7 @@
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
@@ -17,10 +13,10 @@ public class HeapMain extends Application {
 	Lesson currentLesson = Lesson.HEAP;
 	Scene menuScene;
 	Scene lessonScene;
-	
 
 	@Override
 	public void start(Stage primaryStage) {
+		//Scena per la lezione
 		BorderPane root = new BorderPane();
 
 		HeapPane centerPane = new HeapPane(900, 550);
@@ -46,7 +42,7 @@ public class HeapMain extends Application {
 		LessonPane lessonPane = new LessonPane(350, 550, onLessonFinished, onReturnToMenu);
 		root.setLeft(lessonPane);
 
-		//Menu
+		//Scena per il menu
 		EventHandler<ActionEvent> onOpenHeap = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -71,23 +67,11 @@ public class HeapMain extends Application {
 			}
 		};
 
-		AlgaTMenu menu = new AlgaTMenu(1200, 700, onOpenHeap, onOpenHeapsort);
+		AlgaTMenu menu = new AlgaTMenu(1250, 700, onOpenHeap, onOpenHeapsort);
 
-
-
-		final EventHandler<KeyEvent> ExitOnEsc = new EventHandler<KeyEvent>() {
-			@Override
-			public void handle(KeyEvent t) {
-			    if(t.getCode()==KeyCode.ESCAPE){
-			    	primaryStage.close();
-			    }
-			}
-		};
 		lessonScene = new Scene(root);
-		lessonScene.addEventHandler(KeyEvent.KEY_PRESSED, ExitOnEsc);
 		menuScene = new Scene(menu);
-		menuScene.addEventHandler(KeyEvent.KEY_PRESSED, ExitOnEsc);
-		
+
 		primaryStage.setScene(menuScene);
 		primaryStage.setTitle("Heap AlgaT");
 		primaryStage.show();
