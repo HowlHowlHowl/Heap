@@ -283,4 +283,5 @@ public class QuestionPane extends HBox {
 			q1.setText("Rispondi prima alle domande precedenti!");
 		}
 	}
+	
 }

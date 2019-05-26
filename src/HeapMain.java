@@ -17,6 +17,7 @@ public class HeapMain extends Application {
 	Lesson currentLesson = Lesson.HEAP;
 	Scene menuScene;
 	Scene lessonScene;
+	
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -86,7 +87,7 @@ public class HeapMain extends Application {
 		lessonScene.addEventHandler(KeyEvent.KEY_PRESSED, ExitOnEsc);
 		menuScene = new Scene(menu);
 		menuScene.addEventHandler(KeyEvent.KEY_PRESSED, ExitOnEsc);
-
+		
 		primaryStage.setScene(menuScene);
 		primaryStage.setTitle("Heap AlgaT");
 		primaryStage.show();

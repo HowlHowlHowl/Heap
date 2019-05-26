@@ -4,6 +4,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
@@ -66,7 +68,6 @@ public class LessonPane extends VBox {
 	Label lessonTitle;
 	String[] lessonParagraphs;
 	int paragraphIndex;
-	
 	Button prevButton;
 	Button nextButton;
 	Label navLabel;
@@ -82,10 +83,12 @@ public class LessonPane extends VBox {
 		setSpacing(30);
 		setPadding(new Insets(10));
 		setAlignment(Pos.TOP_LEFT);
-		
+		addEventHandler(KeyEvent.KEY_PRESSED, Arrow);
+		addEventHandler(KeyEvent.KEY_PRESSED, Arrow);
 		HBox topBar = new HBox();
 		getChildren().add(topBar);
 		topBar.setSpacing(50);
+
 		
 		lessonTitle = new Label();
 		topBar.getChildren().add(lessonTitle);
@@ -108,7 +111,7 @@ public class LessonPane extends VBox {
 		
 		prevButton = new Button("<< Prev");
 		navBox.getChildren().add(prevButton);
-		
+		prevButton.setFocusTraversable(true);
 		HBox navLabelPane = new HBox();
 		navBox.getChildren().add(navLabelPane);
 		navLabelPane.setMinWidth(200);
@@ -119,18 +122,19 @@ public class LessonPane extends VBox {
 		
 		nextButton = new Button("Next >>");
 		navBox.getChildren().add(nextButton);
-
+		nextButton.setFocusTraversable(true);
+		
 		prevButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				setParagraphIndex(paragraphIndex - 1);
+				Left();
 			}
 		});
 		
 		nextButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				setParagraphIndex(paragraphIndex + 1);
+				Right();
 			}
 		});
 		
@@ -152,6 +156,25 @@ public class LessonPane extends VBox {
 		setParagraphIndex(0);
 	}
 	
+	final EventHandler <KeyEvent> Arrow = new EventHandler<KeyEvent>(){
+		@Override 
+		public void handle (KeyEvent e){
+			if (e.getCode()==KeyCode.RIGHT){
+				Right();
+				nextButton.requestFocus();
+				if(paragraphIndex==lessonParagraphs.length);
+					prevButton.requestFocus();
+				e.consume();
+			}
+			if (e.getCode()==KeyCode.LEFT){
+				Left();
+				prevButton.requestFocus();
+				if(paragraphIndex==1);
+					nextButton.requestFocus();
+				e.consume();
+			}
+		}
+	};
 	void setParagraphIndex(int i) {
 		if(i >= 0 && i < lessonParagraphs.length) {
 			prevButton.setDisable(i == 0);
@@ -164,5 +187,14 @@ public class LessonPane extends VBox {
 				onLessonFinished.handle(new ActionEvent());
 			}
 		}
+	}
+	
+	void Left(){
+		setParagraphIndex(paragraphIndex - 1);
+		
+	}
+	void Right(){
+		setParagraphIndex(paragraphIndex + 1);
+		
 	}
 }
